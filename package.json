@@ -1,0 +1,14 @@
+{
+  "name": "email_generator",
+  "version": "1.0.0",
+  "description": "simple email generator (for testing purpose)",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --timeout 15000"
+  },
+  "author": "rohmanahmad",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^6.1.4"
+  }
+}
