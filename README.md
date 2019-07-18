@@ -22,7 +22,7 @@
 ### Test Result
 
 ```sh
-Generator Test
+  Generator Test
     #generate {fname: "anjani"}
       ✓ should return "anjani@kalimat.ai"
     #generate {fname: "Yusuke", lname: "Iseya"}
