@@ -1,6 +1,9 @@
 'use strict'
 
-const {writeFileSync} = require('fs')
+const {writeFileSync, readFileSync} = require('fs')
+
+const {ENV} = process.env
+const isTest = ENV === 'test'
 
 class DB {
     async adapter () {
@@ -13,7 +16,7 @@ class DB {
     
     async getData (username) {
         try {
-            let currentData = require('./data')
+            let currentData = JSON.parse(readFileSync('data.json', {encoding: 'utf-8'}))
             if (username && typeof username === 'string' && username.length > 0) {
                 currentData = currentData.filter(x => x.username === username)
             }
@@ -38,7 +41,6 @@ class DB {
     }
 
     async truncate () {
-        console.log('---->')
         writeFileSync(
             'data.json',
             '[]',
@@ -102,7 +104,7 @@ class Generator extends DB {
             let exists = await this.isExists(username)
             while (exists) {
                 append += 1
-                console.log('...trying get another username:', username + append)
+                if (!isTest) console.log('...trying get another username:', username + append)
                 exists = await this.isExists(username + append)
             }
             username += (append || '')

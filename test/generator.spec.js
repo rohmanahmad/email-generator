@@ -1,23 +1,30 @@
 const assert = require('assert')
-
+const fs = require('fs')
+const path = require('path')
 const Generator = require('../generator')
+const dbFile = path.join(__dirname, '../data.json')
 
-describe('Generator', function () {
+describe('Generator Test', function () {
     const anjani = new Generator({fname: 'anjani'})
     const yusuke = new Generator({fname: "Yusuke", lname: "Iseya"})
     const stephan = new Generator({fname: "Stephan Danu", lname: "Shakalakalaka"})
+    const rohman = new Generator({fname: "Akhmad", lname: "Abdul Rohman"})
     const yunus = new Generator({fname: "yunus"})
 
-    before(async () => {
-        console.log('truncate')
-        await new Generator({}).truncate()
+    before(function (done) {
+        fs
+            .writeFile(dbFile, '[]', 'utf-8', function () {
+                done()
+            })
     })
-    after(async () => {
-        console.log('truncate')
-        await new Generator({}).truncate()
+    after(function (done) {
+        fs
+            .writeFile(dbFile, '[]', 'utf-8', function () {
+                done()
+            })
     })
     describe('#generate {fname: "anjani"}', function (){
-        it('should return "anjani"', function (done){
+        it('should return "anjani@kalimat.ai"', function (done){
             anjani
                 .generate()
                 .then(function (email) {
@@ -46,6 +53,16 @@ describe('Generator', function () {
                 })
         })
     })
+    describe('#generate {fname: "Akhmad", lname: "Abdul Rohman"}', function (){
+        it('should return "akhmad.rohman@kalimat.ai"', function (done){
+            rohman
+                .generate()
+                .then(function (email) {
+                    assert.equal(email, 'akhmad.rohman@kalimat.ai')
+                    done()
+                })
+        })
+    })
     describe('#generate {fname: "yunus"}', function (){
         it('should return "yunus@kalimat.ai"', function (done){
             yunus
@@ -56,47 +73,61 @@ describe('Generator', function () {
                 })
         })
     })
-    
-    // describe('#generate {fname: "yunus"}', function () {
-    //     it('should return "yunus2@kalimat.ai"', function (done) {
-    //         yunus2
-    //             .generate()
-    //             .then((email) => {
-    //                 assert.equal(email, 'yunus2@kalimat.ai')
-    //                 done()
-    //             })
-    //     })
-    // })
-    // describe('#generate {fname: "yunus"}', function () {
-    //     it('should return "yunus3@kalimat.ai"', function (done) {
-    //         yunus3
-    //             .generate()
-    //             .then((email) => {
-    //                 assert.equal(email, 'yunus3@kalimat.ai')
-    //                 done()
-    //             })
-    //     })
-    // })
 })
 
-describe('Dup Generator', function () {
-    const yunus2 = new Generator({fname: "yunus"})
-    const yunus3 = new Generator({fname: "yunus"})
-
+describe('Duplicate Test', function () {
     describe('#generate {fname: "yunus"}', function () {
-        it('should return "yunus1@kalimat.ai"', function (done) {
-            try {
-                setTimeout(async () => {
-                    await new Generator({}).truncate()
-                    await new Generator({fname: 'yunus'}).generate()
-                    const email = await new Generator({fname: "yunus"}).generate()
-                    assert.equal(email, 'yunus1@kalimat.ai')
+        before (function (done) {
+            const data = [0].map( x => ({username: `yunus${x || ''}`, email: `yunus${x || ''}@kalimat.ai`}))
+            fs
+                .writeFile(dbFile, JSON.stringify(data), 'utf-8', function () {
                     done()
-                }, 3000)
-            } catch (err) {
-                assert.isNotOk(err,'Promise error');
-                done()
-            }
+                })
         })
+        it('should return "yunus1@kalimat.ai"', function (done) {
+            setTimeout(async () => {
+                const email = await new Generator({fname: 'yunus'}).generate()
+                assert.equal(email, 'yunus1@kalimat.ai')
+                done()
+            }, 1)
+        })
+    })
+    describe('#generate {fname: "yunus"}', function () {
+        before (function (done) {
+            const data = [0, 1].map( x => ({username: `yunus${x || ''}`, email: `yunus${x || ''}@kalimat.ai`}))
+            fs
+                .writeFile(dbFile, JSON.stringify(data), 'utf-8', function () {
+                    done()
+                })
+        })
+        it('should return "yunus2@kalimat.ai"', function (done) {
+            setTimeout(async () => {
+                const email = await new Generator({fname: 'yunus'}).generate()
+                assert.equal(email, 'yunus2@kalimat.ai')
+                done()
+            }, 1)
+        })
+    })
+    describe('#generate {fname: "yunus"}', function () {
+        before (function (done) {
+            const data = [0, 1, 2].map( x => ({username: `yunus${x || ''}`, email: `yunus${x || ''}@kalimat.ai`}))
+            fs
+                .writeFile(dbFile, JSON.stringify(data), 'utf-8', function () {
+                    done()
+                })
+        })
+        it('should return "yunus3@kalimat.ai"', function (done) {
+            setTimeout(async () => {
+                const email = await new Generator({fname: 'yunus'}).generate()
+                assert.equal(email, 'yunus3@kalimat.ai')
+                done()
+            }, 1)
+        })
+    })
+    after (function (done) {
+        fs
+            .writeFile(dbFile, '[]', 'utf-8', function () {
+                done()
+            })
     })
 })
