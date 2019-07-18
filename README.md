@@ -1,19 +1,27 @@
 # Email Generator (For Testing Purpose)
 
 ### Installation:
- - ```clone > git clone https://github.com/rohmanahmad/email-generator.git```
- - ```cd email-generator && npm i```
+```bash
+    git clone https://github.com/rohmanahmad/email-generator.git
+```
+```bash
+    cd email-generator && npm i
+```
 
 
 ### Testing
- - ```npm run test```
+```bash
+    npm run test
+```
 
 ### Usage
- - ```node index.js --fname="First Name" --lname="Last Name"```
+```bash
+    node index.js --fname="First Name" --lname="Last Name"
+```
 
 ### Test Result
 
-```
+```sh
 Generator Test
     #generate {fname: "anjani"}
       ✓ should return "anjani@kalimat.ai"
