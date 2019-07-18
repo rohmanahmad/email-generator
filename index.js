@@ -25,6 +25,7 @@ try {
     new Generator(args)
         .generate()
         .then(email => console.log('new email created:', email))
+        .catch(e => console.log(e.message))
 } catch (err) {
     console.error(err.message)
 }

@@ -116,7 +116,6 @@ class Generator extends DB {
             await this.writeData(data)
             return email
         } catch (err) {
-            console.log(err)
             throw err
         }
     }
