@@ -8,6 +8,11 @@
     cd email-generator && npm i
 ```
 
+### docker
+```bash
+    docker-compose run install
+    docker-compose run test
+```
 
 ### Testing
 ```bash
